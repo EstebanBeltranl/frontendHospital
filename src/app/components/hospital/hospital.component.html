@@ -1,0 +1,8 @@
+<h1>Hospitales</h1>
+
+<ul *ngFor="let hospital of DataHospitales.data" >
+    <li> {{ hospital.nombre }} - {{ hospital._id }} </li>
+</ul>
+
+<button (click)='prev()' >Prev</button>
+<button (click)='siguiente()' [disabled]='DataHospitales.finPage'>Siguiente</button>
