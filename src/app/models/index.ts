@@ -3,16 +3,25 @@
 export interface IHospital {
     _id:     string;
     nombre:  string;
-    usuario: IUsuario;
+    usuario: Partial<IUsuario>;
 }
 
 export interface IUsuario {
-    role:   string;
     _id:    string;
     nombre: string;
     email:  string;
-    img:    string;
+    role:   string;
+    google: boolean;
+    img?:    string;
 }
+
+export interface IMedico {
+    _id:    string;
+    nombre: string;
+    usuario: Partial<IUsuario>,
+    hospital: IHospital
+}
+
 
 export interface Data<T> {
     ok: boolean;
@@ -22,4 +31,12 @@ export interface Data<T> {
     limit: number;
     prevHistory?: string[]
     finPage?: boolean;
+}
+
+
+export interface IResFindByColeccion {
+    ok: boolean;
+    usuario?: IUsuario[]; 
+    medico?: IMedico[];
+    hospital?: IHospital[]
 }
