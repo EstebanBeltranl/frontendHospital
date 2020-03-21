@@ -2,9 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ValidationErrors, FormControl, AbstractControl, AsyncValidatorFn } from '@angular/forms';
 import { UsuarioService } from '../services';
 import { Router } from '@angular/router';
-import { map, debounceTime, switchMap, tap } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 import { IResFindByColeccion } from '../models';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 declare function init_plugins();
 
@@ -18,7 +19,7 @@ export class RegisterComponent implements OnInit {
   formRegister: FormGroup;
   controlNombre: FormControl;
 
-  constructor(private fb: FormBuilder, private usuarioService: UsuarioService, private router: Router) {}
+  constructor(private fb: FormBuilder, private usuarioService: UsuarioService, private router: Router, private _snackBar: MatSnackBar) {}
 
   ngOnInit(): void {
     init_plugins();
@@ -66,8 +67,10 @@ export class RegisterComponent implements OnInit {
     }
     this.usuarioService.crearUsuario( newUsuario ).subscribe( 
       (res: any) => {
-        this.router.navigate(['/login'], { state: { usuario: res.usuario } })
-        
+        this._snackBar.open('Has sido Registrado, inicia sesion.', null, {
+          duration: 1500,
+          });
+        this.router.navigate(['/login'])
       },
       err => console.log('error: ', err)
     );

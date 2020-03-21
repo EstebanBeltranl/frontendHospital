@@ -1,51 +1,47 @@
-import { Component, OnInit } from '@angular/core';
-import { Router, Navigation } from '@angular/router';
+import { Component, OnInit, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-import {MatSnackBar} from '@angular/material/snack-bar';
 import { UsuarioService } from '../services';
 import { HttpErrorResponse } from '@angular/common/http';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 declare function init_plugins();
+// Usando la lib de api de google
+declare const gapi: any;
 
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css']
 })
-export class LoginComponent implements OnInit {
+export class LoginComponent implements OnInit, AfterViewInit {
 
   formLogin: FormGroup;
-  getCurrentStateNavigation: Navigation;
   mensajeErrorOnSubmit = null;
-  mensajesDeErrorCampos = null;
+  @ViewChild('btnGoogle') btnGoogle: ElementRef;
+  auth2: any;
 
-
-  constructor(private router: Router, 
-              private _snackBar: MatSnackBar, 
+  constructor(private router: Router,
               private fb: FormBuilder,
-              private usuarioService: UsuarioService) { 
-    this.getCurrentStateNavigation = this.router.getCurrentNavigation();
-    
+              private usuarioService: UsuarioService,
+              private _snackBar: MatSnackBar) {}
+
+  ngAfterViewInit(): void {
+    this.googleInit();
   }
   
   ngOnInit(): void {
-    
     init_plugins();
-    this.initForm()
-    this.formLogin.get('email').setValue(localStorage.getItem('email'))
-    this.llenarFormSiHayUnRegister()
-
+    this.initForm();
   }
 
   ingresar(){
     const { email, password, recuerdame } = this.formLogin.value;
-
     if( this.formLogin.valid ) {
       this.usuarioService.login( { email, password }, recuerdame ).subscribe(
         res => {
-          console.log('res: ', res);
           this.mensajeErrorOnSubmit = null
-          this.router.navigate(['/']);
+          this.router.navigate(['/dashboard']);
         },
         (err: HttpErrorResponse ) => {
           console.log(err)
@@ -61,21 +57,47 @@ export class LoginComponent implements OnInit {
       password: [null, Validators.compose([Validators.required, Validators.minLength(3)])],
       recuerdame: [null] 
     })
-  }
 
-  llenarFormSiHayUnRegister() {
-    const { usuario } = this.getCurrentStateNavigation.extras.state;
-    if( usuario ) {
-      this._snackBar.open('Has sido Registrado, inicia sesion.', null, {
-        duration: 1500,
-      });
-      this.formLogin.get('email').setValue(usuario.email)
+    if( localStorage.getItem('email') ) {
+      let { recuerdame, email } = JSON.parse(localStorage.getItem('email'));
+      this.formLogin.get('email').setValue(email);
+      this.formLogin.get('recuerdame').setValue(recuerdame);
     }
-  }
 
+  }
 
   get email() {
     return this.formLogin.get('email')
+  }
+
+  //Referencia a la docu de google: https://developers.google.com/identity/sign-in/web/build-button
+  googleInit() {
+    gapi.load('auth2', () => {
+      this.auth2 = gapi.auth2.init({
+        client_id: '686922171643-sgnf7etrtu91tjvjgublqf44k516ukj6.apps.googleusercontent.com',
+        scope: 'profile email'
+      });
+
+      this.attachSignin( this.btnGoogle )
+    })
+  }
+
+  attachSignin( element: ElementRef ) {
+    const { nativeElement } = element;
+    this.auth2.attachClickHandler(nativeElement, {}, 
+      (googleUser: any) => {
+        let {id_token} = googleUser.getAuthResponse();
+
+        this.usuarioService.loginGoogle( id_token).subscribe( 
+          res => window.location.href = '/dashboard',
+          (err: HttpErrorResponse ) => {
+
+            this._snackBar.open( err.error.mensaje , null, {
+              duration: 1500,
+              });
+          }
+        )
+      });
   }
 
 }

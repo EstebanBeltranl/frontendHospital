@@ -11,7 +11,7 @@ export class InterceptorhttpService implements HttpInterceptor {
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
 
-    console.log('interceptor: ', req.headers.get('X-token')) 
+    console.log('interceptor: ', req.body) 
     return next.handle(req)
   }
 }

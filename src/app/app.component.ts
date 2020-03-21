@@ -7,5 +7,11 @@ import { HospitalService } from './services/hospital.service';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent  {
- 
+  miSaludo = 'Saludos!!'
+
+  user: any = {name: 'Esteban'}
+
+  cambiar() {
+    this.user = { name: 'Juanito', arroz: true }
+  }
 }
