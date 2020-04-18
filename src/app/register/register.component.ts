@@ -38,7 +38,7 @@ export class RegisterComponent implements OnInit {
       ],
       password: [null, Validators.required],
       password2: [null, Validators.required],
-      condiciones: [false],
+      condiciones: [false, Validators.requiredTrue],
     }, { validators: this.compararPassword })
   }
 
@@ -50,7 +50,7 @@ export class RegisterComponent implements OnInit {
     return this.formRegister.get('email')
   }
 
-  compararPassword( formgroup: FormGroup): ValidationErrors | null {
+  private compararPassword( formgroup: FormGroup): ValidationErrors | null {
     const { password, password2 } = formgroup.value;
     let valid = true;
     if( password2 ) {
@@ -76,7 +76,8 @@ export class RegisterComponent implements OnInit {
     );
   }
 
-  findEmail(): AsyncValidatorFn {
+  
+  private findEmail(): AsyncValidatorFn {
     return (control: AbstractControl ): Observable<ValidationErrors | null> => {
       return this.usuarioService.findPorEmail(control.value).pipe(
         map((res: IResFindByColeccion) => res.usuario.length > 0 ? { emailExiste: { description: 'Este email ya esta en uso.' } } : null )

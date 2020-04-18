@@ -54,16 +54,18 @@ export class LoginComponent implements OnInit, AfterViewInit {
   initForm() {
     this.formLogin = this.fb.group({
       email: [ null , Validators.compose([Validators.required, Validators.email])],
-      password: [null, Validators.compose([Validators.required, Validators.minLength(3)])],
+      password: ['esteban', Validators.compose([Validators.required, Validators.minLength(3)])],
       recuerdame: [null] 
     })
 
     if( localStorage.getItem('email') ) {
       let { recuerdame, email } = JSON.parse(localStorage.getItem('email'));
-      this.formLogin.get('email').setValue(email);
-      this.formLogin.get('recuerdame').setValue(recuerdame);
+      // Actualizar una parte del formulario
+      this.formLogin.patchValue({
+        email,
+        recuerdame
+      })
     }
-
   }
 
   get email() {

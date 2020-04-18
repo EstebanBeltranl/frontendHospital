@@ -1,0 +1,91 @@
+<div class="row">
+  <div class="col-12">
+    <div class="card">
+      <div class="card-body">
+        <input
+          [formControl]="buscarInput"
+          type="text"
+          class="form-control"
+          placeholder="Buscar usuario"
+        />
+      </div>
+    </div>
+  </div>
+</div>
+
+<button class="btn btn-prymary" (click)="openDialogCreate()">
+  <i class="fa fa-plus"></i>
+  Crear hospital
+</button>
+
+<div class="row">
+  <div class="col-12">
+    <div class="card">
+      <div class="card-body">
+        <h2 class="card-title">Hospitales registrados</h2>
+
+        <p *ngIf="busqueda">
+          Se encontraron
+          <strong> {{ DataHospitales.data.length }} </strong> hospitales/s.
+        </p>
+        <p *ngIf="DataHospitales.data.length === 0 && !busqueda">
+          No hay mas hospitales en la tabla...
+        </p>
+        <table *ngIf="DataHospitales.data.length > 0" class="table table-hover">
+          <thead>
+            <tr>
+              <th>Imagen</th>
+              <th>Nombre</th>
+              <th></th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr *ngFor="let hospital of DataHospitales.data">
+              <td class="w70">
+                <img
+                  [src]="hospital.img | imagen: 'hospitales'"
+                  [alt]="'Foto del hospital ' + hospital.nombre"
+                  class="img-50"
+                />
+              </td>
+              <td>
+                <input
+                  class="form-control"
+                  type="text"
+                  [(ngModel)]="hospital.nombre"
+                  [value]="hospital.nombre"
+                />
+              </td>
+              <td>
+                <button
+                  class="btn btn-primary"
+                  (click)="actualizarHospital(hospital)"
+                >
+                  <i class="fa fa-save"></i>
+                </button>
+                <button
+                  class="btn btn-danger"
+                  (click)="openDialogBorrar(hospital)"
+                >
+                  <i class="fa fa-trash-o"></i>
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div *ngIf="!busqueda">
+          <button class="btn btn-secondary" (click)="prev()">Anterior</button>
+          <button
+            class="btn btn-secondary"
+            (click)="siguiente()"
+            [disabled]="!DataHospitales.proxPage"
+          >
+            Siguiente
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

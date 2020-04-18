@@ -3,6 +3,7 @@
 export interface IHospital {
     _id:     string;
     nombre:  string;
+    img: string;
     usuario: Partial<IUsuario>;
 }
 

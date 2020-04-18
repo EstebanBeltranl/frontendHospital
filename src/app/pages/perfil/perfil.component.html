@@ -1,0 +1,58 @@
+<div class="row">
+    
+    <div class="col-lg-7">
+        <div class="card">
+            <div class="card-body">
+                <h1 class="card-title">Perfil de Usuario</h1>
+                <h3 class="card-subtitle"> {{ usuario.nombre }} </h3>
+                <form [formGroup]='formUsuario' class="form p-t-20" (ngSubmit)='guardar()'>
+                    <div class="form-group">
+                        <label for="exampleInputuname">Nombre</label>
+                        <div class="input-group">
+                            <div class="input-group-addon"><i class="ti-user"></i></div>
+                            <input type="text" formControlName='nombre' class="form-control" placeholder="Nombre" id="exampleInputuname">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="exampleInputEmail1">Email</label>
+                        <div class="input-group">
+                            <div class="input-group-addon"><i class="ti-email"></i></div>
+                            <input type="email" formControlName='email' class="form-control" placeholder="Ingresa tu email" id="exampleInputEmail1" >
+                            
+                        </div>
+                                <div *ngIf="usuario.google" >
+                                    <p> Eres usuario de google, no puedes actualizar/cambiar tu correo </p>
+                                </div>
+                    </div>
+                    
+                    <button type="submit" 
+                        class="btn btn-success waves-effect waves-light m-r-10">
+                        <i class="fa fa-save"></i>  Guardar
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-5">
+        <div class="card">
+            <div class="card-body">
+                <h1 class="card-title">Foto del Usuario</h1>
+                <h3 class="card-subtitle">Nombre usuario</h3>
+                
+                <img src="" alt="">
+                
+                <label>Agregar Foto</label>
+                <input type="file" (change)="seleccionImagen($event)" class="form-control" >
+    
+                <br> <br>
+                <button type="button"
+                    (click)="subirFoto()"
+                    [disabled]="!imagenSubir" 
+                    class="btn btn-success waves-effect waves-light m-r-10">
+                    <i class="fa fa-save"></i>  Actualizar Foto
+                </button>
+            </div>
+        </div>
+    </div>
+
+</div>
